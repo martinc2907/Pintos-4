@@ -10,6 +10,8 @@
 
 /* Partition that contains the file system. */
 struct block *fs_device;
+extern v_flag;
+
 
 static void do_format (void);
 
@@ -29,6 +31,7 @@ filesys_init (bool format)
     do_format ();
 
   free_map_open ();
+
 }
 
 /* Shuts down the file system module, writing any unwritten data
@@ -51,6 +54,7 @@ filesys_create (const char *name, off_t initial_size, FILE_TYPE type)
   char file_name[NAME_MAX+1];
   struct inode * inode;
   bool success;
+
 
   /* Getting innermost dir and parsed file name. */
   if(dir_get_dir_and_file(name, &dir , file_name) == false){
@@ -146,6 +150,7 @@ filesys_remove (const char *name)
 
   /* If incorrect name given, fail. */
   if(dir_get_dir_and_file(name, &dir, file_name) == false){
+    // printf("fail0\n");
     return false;
   }
 
@@ -155,14 +160,19 @@ filesys_remove (const char *name)
   /* If file doesn't exist.*/
   if(inode == NULL){
     // printf("fail1\n");
+    dir_close(dir);
     return false;
   }
 
   /* Don't allow removing current directory, or open file. */
   if(dir_get_inode(thread_current()->cur_dir) == inode || inode_get_open_cnt(inode) > 2){
-    dir_close(dir); //techncically should be 1.
-    // printf("fail2%d\n",inode_get_open_cnt(inode));
-    return false;
+     //techncically should be 1.
+    if(v_flag){
+      // printf("fail2\n");
+    }else{
+      dir_close(dir);
+      return false;
+    }
   } 
   /* Don't allow deletion if directory not empty. */
   if(inode_get_file_type(inode)==DIR){

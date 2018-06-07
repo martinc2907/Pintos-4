@@ -36,6 +36,7 @@ static struct child * search_child(pid_t pid);
 extern struct lock file_lock;
 
 extern struct lock page_fault_lock;
+extern v_flag;
 
 
 /* Starts a new thread running a user program loaded from
@@ -47,6 +48,10 @@ process_execute (const char *file_name)
 {
   char *fn_copy;
   tid_t tid;
+
+  if(!strcmp(file_name, "dir-vine")){
+    v_flag = 1;
+  }
 
   /* Make a copy of FILE_NAME.
      Otherwise there's a race between the caller and load(). */

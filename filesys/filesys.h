@@ -11,6 +11,8 @@
 /* Block device that contains the file system. */
 struct block *fs_device;
 
+int v_flag;
+
 
 /* Directory or regular file. */
 typedef enum{DIR, FILE} FILE_TYPE;

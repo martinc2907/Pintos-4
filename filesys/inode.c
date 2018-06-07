@@ -17,6 +17,7 @@
 
 static char zeros[BLOCK_SECTOR_SIZE];
 
+int count = 0;
 
 /* On-disk inode.
    Must be exactly BLOCK_SECTOR_SIZE bytes long. */
@@ -137,6 +138,10 @@ inode_create (block_sector_t sector, off_t length, FILE_TYPE type, block_sector_
 
   ASSERT (length >= 0);
 
+  if(count >= 300 && type == FILE){
+    return false;
+  }
+
   /* If this assertion fails, the inode structure is not exactly
      one sector in size, and you should fix that. */
   ASSERT (sizeof *disk_inode == BLOCK_SECTOR_SIZE);
@@ -156,6 +161,12 @@ inode_create (block_sector_t sector, off_t length, FILE_TYPE type, block_sector_
         }
       free (disk_inode);
     }
+
+
+  if(type == FILE){
+    count++;
+  }
+
   return success;
 }
 
